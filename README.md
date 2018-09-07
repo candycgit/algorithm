@@ -2,7 +2,8 @@
 
 ### graph
 
-##### :apple: A*, A star
+##### :apple: [A*, or A star](https://en.wikipedia.org/wiki/A*_search_algorithm)
+Find path between source and destination on a map with obstacles
 
 ### leetcode
 

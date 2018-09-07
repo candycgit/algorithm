@@ -7,7 +7,6 @@ import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -43,10 +42,12 @@ public class AStarTest {
         WATCH.stop();
         System.out.println("Time elapsed: " + WATCH.getTime());
         case1.process(steps);
+        case1.printGrid();
         assertTrue(case1.answerIsValid());
     }
 
     private static class InOut {
+
 
         private final char[][] grid;
         private final char[][] answer;
@@ -89,13 +90,22 @@ public class AStarTest {
 
         private boolean answerIsValid() {
             for (int i = 0; i < answer.length; i++) {
-                for (int j = 0; j < answer[0].length; j++) {
+                for (int j = 0; j < answer[i].length; j++) {
                     if (answer[i][j] != grid[i][j]) {
                         return false;
                     }
                 }
             }
             return true;
+        }
+
+        public void printGrid() {
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    System.out.print(grid[i][j]);
+                }
+                System.out.println("");
+            }
         }
     }
 

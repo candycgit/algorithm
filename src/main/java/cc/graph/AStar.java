@@ -1,8 +1,9 @@
 package cc.graph;
 
 import java.awt.Point;
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * A Star algorithm for M x N matrix
@@ -10,6 +11,10 @@ import java.util.List;
 public class AStar {
 
     private static final String MSG_INVALID_GRID = "Invalid grid";
+    private static final int[][] MOVE = new int[][]{
+            {-1, 0}, {0, -1}, {+1, 0}, {0, +1}
+            //{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1}
+    };
 
     private static final char EMPTY = '-';
     private static final char OBSTACLE = '#';
@@ -19,7 +24,9 @@ public class AStar {
     private final char[][] grid;
 
     public AStar(char[][] grid) {
-        validateGridSize(grid);
+        if (grid == null) {
+            throw new IllegalArgumentException(MSG_INVALID_GRID);
+        }
         m = grid.length;
         n = grid[0].length;
         this.grid = new char[m][n];
@@ -34,27 +41,109 @@ public class AStar {
         }
     }
 
-    public List<Point> findPath(Point source, Point target) {
+    public Stack<Point> findPath(Point source, Point target) {
+        Stack<Point> result = new Stack<>();
         if (!valid(source) || !valid(target) || source.equals(target)) {
-            return Collections.EMPTY_LIST;
+            return result;
         }
-        return null;
-    }
-
-    private void validateGridSize(char[][] grid) {
-        if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) {
-            throw new IllegalArgumentException(MSG_INVALID_GRID);
-        }
-        int cols = grid[0].length;
-        for (int i = 1; i < grid.length; i++) {
-            if (grid[i] == null || grid[i].length != cols) {
-                throw new IllegalArgumentException(MSG_INVALID_GRID);
+        boolean[][] closedList = new boolean[m][n];
+        Track[][] trackDetails = new Track[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                trackDetails[i][j] = new Track();
             }
         }
+        trackDetails[source.x][source.y] = new Track(source.x, source.y, 0.0, 0.0, 0.0);
+        Queue<FPoint> openList = new LinkedList<>();
+        openList.add(new FPoint(0.0, source));
+        boolean found = false;
+
+
+        while (!found && !openList.isEmpty()) {
+            FPoint p = openList.poll();
+            closedList[p.x][p.y] = true;
+            for (int k = 0; k < MOVE.length; k++) {
+                int x = p.x + MOVE[k][0];
+                int y = p.y + MOVE[k][1];
+                if (valid(x, y)) {
+                    if (x == target.x && y == target.y) {
+                        trackDetails[x][y].parentX = p.x;
+                        trackDetails[x][y].parentY = p.y;
+                        trace(trackDetails, target, result);
+                        found = true;
+                    } else if (!closedList[x][y]) {
+                        double G = trackDetails[p.x][p.y].g + 1.0;
+                        double H = heuristic(x, y, target);
+                        double F = G + H;
+                        if (F < trackDetails[x][y].f) {
+                            openList.add(new FPoint(F, new Point(x, y)));
+                            trackDetails[x][y].f = F;
+                            trackDetails[x][y].g = G;
+                            trackDetails[x][y].h = H;
+                            trackDetails[x][y].parentX = p.x;
+                            trackDetails[x][y].parentY = p.y;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void trace(Track[][] trackDetails, Point target, Stack<Point> result) {
+        int x = target.x;
+        int y = target.y;
+        while (!(trackDetails[x][y].parentX == x && trackDetails[x][y].parentY == y)) {
+            result.push(new Point(x, y));
+            int nextX = trackDetails[x][y].parentX;
+            int nextY = trackDetails[x][y].parentY;
+            x = nextX;
+            y = nextY;
+        }
+    }
+
+    private double heuristic(int x, int y, Point target) {
+        return Math.sqrt(Math.pow(x - target.x, 2) + Math.pow(y - target.y, 2));
     }
 
     private boolean valid(Point point) {
-        return point != null && point.x >= 0 && point.x < m && point.y >= 0 && point.y < m;
+        return point != null && valid(point.x, point.y);
+    }
+
+    private boolean valid(int x, int y) {
+        return x >= 0 && x < m && y >= 0 && y < n && grid[x][y] == EMPTY;
+    }
+
+    private static class Track {
+        private int parentX = -1;
+        private int parentY = -1;
+        // f = g + h
+        private double f = Double.MAX_VALUE;
+        private double g = Double.MAX_VALUE;
+        private double h = Double.MAX_VALUE;
+
+        private Track() {
+
+        }
+
+        private Track(int parentX, int parentY, double f, double g, double h) {
+            this.parentX = parentX;
+            this.parentY = parentY;
+            this.f = f;
+            this.g = g;
+            this.h = h;
+        }
+    }
+
+    private static class FPoint extends Point {
+        private double f = 0.0;
+
+        public FPoint(double f, Point point) {
+            super(point);
+            this.f = f;
+        }
     }
 
 }

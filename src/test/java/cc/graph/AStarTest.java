@@ -27,6 +27,10 @@ public class AStarTest {
     private static final Point SOURCE_1 = new Point(3, 1);
     private static final Point TARGET_1 = new Point(6, 38);
 
+    private static final String CASE_2 = "graph/a_star_case2.txt";
+    private static final Point SOURCE_2 = new Point(3, 1);
+    private static final Point TARGET_2 = new Point(6, 38);
+
 
     @Test
     public void shouldFindPathForCase1() {
@@ -39,6 +43,24 @@ public class AStarTest {
         }
         AStar testInstance = new AStar(case1.grid);
         List<Point> steps = testInstance.findPath(SOURCE_1, TARGET_1);
+        WATCH.stop();
+        System.out.println("Time elapsed: " + WATCH.getTime());
+        case1.process(steps);
+        case1.printGrid();
+        assertTrue(case1.answerIsValid());
+    }
+
+    @Test
+    public void shouldFindPathForCase2() {
+        WATCH.start();
+        InOut case1 = null;
+        try {
+            case1 = new InOut(CASE_2);
+        } catch (URISyntaxException | IOException exc) {
+            fail("Could not read an input file: " + CASE_2);
+        }
+        AStar testInstance = new AStar(case1.grid);
+        List<Point> steps = testInstance.findPath(SOURCE_2, TARGET_2);
         WATCH.stop();
         System.out.println("Time elapsed: " + WATCH.getTime());
         case1.process(steps);

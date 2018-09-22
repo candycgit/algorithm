@@ -1,7 +1,7 @@
 package cc.graph;
 
 import java.awt.Point;
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -46,18 +46,20 @@ public class AStar {
         if (!valid(source) || !valid(target) || source.equals(target)) {
             return result;
         }
+
         boolean[][] closedList = new boolean[m][n];
-        Track[][] trackDetails = new Track[m][n];
+
+        Track[][] tracks = new Track[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                trackDetails[i][j] = new Track();
+                tracks[i][j] = new Track();
             }
         }
-        trackDetails[source.x][source.y] = new Track(source.x, source.y, 0.0, 0.0, 0.0);
-        Queue<FPoint> openList = new LinkedList<>();
+        tracks[source.x][source.y] = new Track(source.x, source.y, 0.0, 0.0, 0.0);
+
+        Queue<FPoint> openList = new PriorityQueue<>();
         openList.add(new FPoint(0.0, source));
         boolean found = false;
-
 
         while (!found && !openList.isEmpty()) {
             FPoint p = openList.poll();
@@ -67,23 +69,22 @@ public class AStar {
                 int y = p.y + MOVE[k][1];
                 if (valid(x, y)) {
                     if (x == target.x && y == target.y) {
-                        trackDetails[x][y].parentX = p.x;
-                        trackDetails[x][y].parentY = p.y;
-                        trace(trackDetails, target, result);
+                        tracks[x][y].parentX = p.x;
+                        tracks[x][y].parentY = p.y;
+                        trace(tracks, target, result);
                         found = true;
                     } else if (!closedList[x][y]) {
-                        double G = trackDetails[p.x][p.y].g + 1.0;
-                        double H = heuristic(x, y, target);
+                        double G = tracks[p.x][p.y].g + 1.0;
+                        double H = heuristic(x, y, target.x, target.y);
                         double F = G + H;
-                        if (F < trackDetails[x][y].f) {
+                        if (F < tracks[x][y].f) {
+                            tracks[x][y].parentX = p.x;
+                            tracks[x][y].parentY = p.y;
+                            tracks[x][y].g = G;
+                            tracks[x][y].h = H;
+                            tracks[x][y].f = F;
                             openList.add(new FPoint(F, new Point(x, y)));
-                            trackDetails[x][y].f = F;
-                            trackDetails[x][y].g = G;
-                            trackDetails[x][y].h = H;
-                            trackDetails[x][y].parentX = p.x;
-                            trackDetails[x][y].parentY = p.y;
                         }
-
                     }
                 }
             }
@@ -92,20 +93,28 @@ public class AStar {
         return result;
     }
 
-    private void trace(Track[][] trackDetails, Point target, Stack<Point> result) {
+    private void trace(Track[][] tracks, Point target, Stack<Point> result) {
         int x = target.x;
         int y = target.y;
-        while (!(trackDetails[x][y].parentX == x && trackDetails[x][y].parentY == y)) {
+        while (!(tracks[x][y].parentX == x && tracks[x][y].parentY == y)) {
             result.push(new Point(x, y));
-            int nextX = trackDetails[x][y].parentX;
-            int nextY = trackDetails[x][y].parentY;
+            int nextX = tracks[x][y].parentX;
+            int nextY = tracks[x][y].parentY;
             x = nextX;
             y = nextY;
         }
     }
 
-    private double heuristic(int x, int y, Point target) {
-        return Math.sqrt(Math.pow(x - target.x, 2) + Math.pow(y - target.y, 2));
+    /**
+     * Heuristics for grid maps:
+     *   - Manhattan distance
+     *   - Diagonal distance
+     *   - Euclidean distance (selected)
+     */
+    private double heuristic(int x1, int y1, int x2, int y2) {
+        double deltaX = x1 - x2;
+        double deltaY = y1 - y2;
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
     private boolean valid(Point point) {
@@ -125,7 +134,6 @@ public class AStar {
         private double h = Double.MAX_VALUE;
 
         private Track() {
-
         }
 
         private Track(int parentX, int parentY, double f, double g, double h) {
@@ -137,12 +145,18 @@ public class AStar {
         }
     }
 
-    private static class FPoint extends Point {
+    private static class FPoint extends Point implements Comparable<FPoint> {
+        // f = g + h
         private double f = 0.0;
 
         public FPoint(double f, Point point) {
             super(point);
             this.f = f;
+        }
+
+        @Override
+        public int compareTo(FPoint other) {
+            return java.lang.Double.compare(this.f, other.f);
         }
     }
 

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AStarTest {
@@ -31,6 +32,10 @@ public class AStarTest {
     private static final Point SOURCE_2 = new Point(3, 1);
     private static final Point TARGET_2 = new Point(6, 38);
 
+    @BeforeEach
+    public void setUp() {
+        WATCH.reset();
+    }
 
     @Test
     public void shouldFindPathForCase1() {

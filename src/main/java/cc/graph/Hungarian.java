@@ -20,6 +20,9 @@ public class Hungarian {
     public static void main(String[] args) throws Exception {
         Hungarian algorithm = new Hungarian();
         algorithm.debug("Input read:");
+        algorithm.rowReduction();
+        algorithm.columnReduction();
+        algorithm.debug("Reduction applied:");
     }
 
     private void initCostMatrix() throws Exception {
@@ -45,6 +48,37 @@ public class Hungarian {
                 System.out.printf("%s ", costMatrix[i][j]);
             }
             System.out.println();
+        }
+    }
+
+    /**
+     * Step 1 of algo - see readme.
+     */
+    private void rowReduction() {
+        for (int i = 0; i < n; i++) {
+            int min = costMatrix[i][0];
+            for (int j = 1; j < n; j++) {
+                min = Math.min(min, costMatrix[i][j]);
+            }
+            for (int j = 0; j < n; j++) {
+                costMatrix[i][j] -= min;
+            }
+        }
+    }
+
+
+    /**
+     * Step 2 of algo - see readme.
+     */
+    private void columnReduction() {
+        for (int j = 0; j < n; j++) {
+            int min = costMatrix[0][j];
+            for (int i = 1; i < n; i++) {
+                min = Math.min(min, costMatrix[i][j]);
+            }
+            for (int i = 0; i < n; i++) {
+                costMatrix[i][j] -= min;
+            }
         }
     }
 

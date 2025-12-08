@@ -9,13 +9,13 @@ import java.util.List;
  * W - is a right set of vertices.
  * graph - adjacency list of "v -> w" edges.
  *
- * The complexity of algo:
+ * The complexity of algo: O(nV * E).
  */
 public class KuhnAlgorithm {
 
     private final int nV, nW;
     private final List<Integer>[] graph;
-    private final int[] matchedWToV;
+    private final MaxBipartiteMatch result;
 
     private boolean[] visited;
 
@@ -23,17 +23,16 @@ public class KuhnAlgorithm {
         this.nV = nV;
         this.nW = nW;
         this.graph = graph;
-
-        this.matchedWToV = new int[nW];
-        Arrays.fill(matchedWToV, -1);
+        this.result = new MaxBipartiteMatch(nW);
     }
 
-    public int[] findMaxBipartiteMatching() {
+    public MaxBipartiteMatch findMaxBipartiteMatching() {
         for (int v = 0; v < nV; v++) {
             visited = new boolean[nW];
-            dfs(v);
+            if (dfs(v))
+                result.m++;
         }
-        return matchedWToV;
+        return result;
     }
 
     private boolean dfs(int v) {
@@ -42,11 +41,20 @@ public class KuhnAlgorithm {
                 continue;
             visited[w] = true;
             // a) no match, or b) try to do alternative match
-            if (matchedWToV[w] == -1 || dfs(matchedWToV[w])) {
-                matchedWToV[w] = v;
+            if (result.matchedWToV[w] == -1 || dfs(result.matchedWToV[w])) {
+                result.matchedWToV[w] = v;
                 return true;
             }
         }
         return false;
+    }
+
+    public static class MaxBipartiteMatch {
+        public int m = 0;
+        public int[] matchedWToV;
+        public MaxBipartiteMatch(int nW) {
+            matchedWToV = new int[nW];
+            Arrays.fill(matchedWToV, -1);
+        }
     }
 }

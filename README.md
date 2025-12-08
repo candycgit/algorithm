@@ -13,7 +13,7 @@ finding a perfect matching with minimum cost in a bipartite graph
 in polynomial time O(N^3).
 
 Can be mentioned as:
-- Assignment Problem
+- Assignment Problem, or
 - Minimum Weight Perfect Bipartite Matching
 
 Special application:
@@ -50,11 +50,11 @@ Cover all the zeros in the matrix using the minimum number of horizontal and ver
 5. Repeat: Return to Step 3 with the new matrix.
 
 Explanation for step 3 above:
-- The "minimum set of lines" problem is equivalent to finding the Maximum Bipartite Matching
-which can be solved with **Kuhn's Algorithm**.
-- Once the Maximum Matching is found, the [**Minimum Vertex Cover**](https://en.wikipedia.org/wiki/Vertex_cover) 
-(the minimum set of lines) can be derived directly from the unmatched vertices using 
-the **Augmenting Path Search** (Minimum Cover Derivation).
+- To solve "minimum set of lines" problem:
+  - find Maximum Bipartite Matching with **Kuhn's Algorithm**, then
+  - derive [**Minimum Vertex Cover**](https://en.wikipedia.org/wiki/Vertex_cover) 
+    (minimum set of lines) from the unmatched vertices using 
+    **Augmenting Path Search** (Minimum Cover Derivation).
 - For Minimum Line Cover see **König's Theorem**: in any bipartite graph, 
 the number of edges in a maximum matching (maximum number of independent zero assignments) 
 is equal to the minimum number of vertices (minimum number of horizontal and vertical lines) 

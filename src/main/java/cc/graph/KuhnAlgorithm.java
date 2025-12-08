@@ -1,29 +1,52 @@
 package cc.graph;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Kuhn's Algorithm for Maximum Bipartite Matching using DFS.
- * U - is a left set of vertices.
- * V - is a right set of vertices.
- * graph - it's enough to have adjacency list of "v -> u" edges.
+ * V - is a left set of vertices.
+ * W - is a right set of vertices.
+ * graph - adjacency list of "v -> w" edges.
  *
  * The complexity of algo:
  */
 public class KuhnAlgorithm {
 
-    private final int sizeU, sizeV;
+    private final int nV, nW;
     private final List<Integer>[] graph;
-    private final int[] matchedVToU;
+    private final int[] matchedWToV;
 
-    public KuhnAlgorithm(int sizeU, int sizeV, List<Integer>[] graph) {
-        this.sizeU = sizeU;
-        this.sizeV = sizeV;
+    private boolean[] visited;
+
+    public KuhnAlgorithm(int nV, int nW, List<Integer>[] graph) {
+        this.nV = nV;
+        this.nW = nW;
         this.graph = graph;
 
-        // result;
-        this.matchedVToU = new int[sizeV];
+        this.matchedWToV = new int[nW];
+        Arrays.fill(matchedWToV, -1);
     }
 
+    public int[] findMaxBipartiteMatching() {
+        for (int v = 0; v < nV; v++) {
+            visited = new boolean[nW];
+            dfs(v);
+        }
+        return matchedWToV;
+    }
 
+    private boolean dfs(int v) {
+        for (int w : graph[v]) {
+            if (visited[w])
+                continue;
+            visited[w] = true;
+            // a) no match, or b) try to do alternative match
+            if (matchedWToV[w] == -1 || dfs(matchedWToV[w])) {
+                matchedWToV[w] = v;
+                return true;
+            }
+        }
+        return false;
+    }
 }

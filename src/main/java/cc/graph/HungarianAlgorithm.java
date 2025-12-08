@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Stream;
 
-public class Hungarian {
+public class HungarianAlgorithm {
 
     // the input is assumed to be 100% valid
     private static final String INPUT_FILE_NAME = "hungarian_input_1.txt";
@@ -13,12 +13,12 @@ public class Hungarian {
     private int[][] costMatrix;
     private int n;
 
-    public Hungarian() throws Exception {
+    public HungarianAlgorithm() throws Exception {
         initCostMatrix();
     }
 
     public static void main(String[] args) throws Exception {
-        Hungarian algorithm = new Hungarian();
+        HungarianAlgorithm algorithm = new HungarianAlgorithm();
         algorithm.debug("Input read:");
         algorithm.rowReduction();
         algorithm.columnReduction();
@@ -30,7 +30,7 @@ public class Hungarian {
         try (InputStream resource = this.getClass().getClassLoader().getResourceAsStream(INPUT_FILE_NAME);
              BufferedReader reader = new BufferedReader(new InputStreamReader(resource))
         ) {
-            this.n = Integer.parseInt(reader.readLine().trim());
+            n = Integer.parseInt(reader.readLine().trim());
             costMatrix = new int[n][n];
             for (int i = 0; i < n; i++) {
                 costMatrix[i] = Stream.of(reader.readLine().trim().split("\\s+"))
@@ -45,7 +45,7 @@ public class Hungarian {
         System.out.printf("n = %s\n", n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                System.out.printf("%s ", costMatrix[i][j]);
+                System.out.printf("%4d ", costMatrix[i][j]);
             }
             System.out.println();
         }

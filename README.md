@@ -52,8 +52,8 @@ Cover all the zeros in the matrix using the minimum number of horizontal and ver
 Explanation for step 3 above:
 - The "minimum set of lines" problem is equivalent to finding the Maximum Bipartite Matching
 which can be solved with **Kuhn's Algorithm**.
-- Once the Maximum Matching is found, the **Minimum Vertex Cover** (the minimum set of lines) 
-can be derived directly from the unmatched vertices using 
+- Once the Maximum Matching is found, the [**Minimum Vertex Cover**](https://en.wikipedia.org/wiki/Vertex_cover) 
+(the minimum set of lines) can be derived directly from the unmatched vertices using 
 the **Augmenting Path Search** (Minimum Cover Derivation).
 - For Minimum Line Cover see **König's Theorem**: in any bipartite graph, 
 the number of edges in a maximum matching (maximum number of independent zero assignments) 

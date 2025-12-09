@@ -3,6 +3,8 @@ package cc.graph;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class HungarianAlgorithm {
@@ -23,6 +25,9 @@ public class HungarianAlgorithm {
         algorithm.rowReduction();
         algorithm.columnReduction();
         algorithm.debug("Reduction applied:");
+        var bipartiteGraph = algorithm.createBipartiteGraph();
+        var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
+        algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
     }
 
     private void initCostMatrix() throws Exception {
@@ -66,7 +71,6 @@ public class HungarianAlgorithm {
         }
     }
 
-
     /**
      * Step 2 of algo - see readme.
      */
@@ -82,4 +86,85 @@ public class HungarianAlgorithm {
         }
     }
 
+    /**
+     * Step 3.1 of algo - see readme.
+     */
+    private List<Integer>[] createBipartiteGraph() {
+        List<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                if (costMatrix[i][j] == 0) {
+                    graph[i].add(j);
+                }
+            }
+        }
+        return graph;
+    }
+
+    /**
+     * Step 3.1 of algo - see readme.
+     */
+    private KuhnAlgorithm.MaxBipartiteMatch findMaxBipartiteMatching(List<Integer>[] bipartiteGraph) {
+        KuhnAlgorithm kuhn = new KuhnAlgorithm(n, n, bipartiteGraph);
+        return kuhn.findMaxBipartiteMatching();
+    }
+
+    /**
+     * Step 3.2 of algo - see readme.
+     */
+    private MinimumLineCover findMinimumLineCover(List<Integer>[] bipartiteGraph, KuhnAlgorithm.MaxBipartiteMatch maxBipartiteMatch) {
+        boolean[] rowReached = new boolean[n];
+        boolean[] colReached = new boolean[n];
+
+        // find unassigned rows
+        boolean[] assignedRow = new boolean[n];
+        for (int v : maxBipartiteMatch.matchedWToV) {
+            if (v != -1)
+                assignedRow[v] = true;
+        }
+
+        // start DFS from unassigned rows: unmatched edge -> matched edge -> unmatched edge -> ...
+        for (int v = 0; v < n; v++) {
+            if (!assignedRow[v])
+                reach(v, bipartiteGraph, maxBipartiteMatch, rowReached, colReached);
+        }
+
+        // prepare covered rows and covered columns
+        var minLineCover = new MinimumLineCover(new ArrayList<>(), new ArrayList<>());
+        for (int i = 0; i < n; i++) {
+            if (!rowReached[i]) {
+                minLineCover.coveredRows.add(i);
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            if (colReached[j]) {
+                minLineCover.coveredCols.add(j);
+            }
+        }
+        return minLineCover;
+    }
+
+    /**
+     * DFS as Alternating Path traversal - for step 3.2
+     */
+    private void reach(int v, List<Integer>[] graph, KuhnAlgorithm.MaxBipartiteMatch match,
+                       boolean[] rowReached, boolean[] colReached) {
+        rowReached[v] = true;
+        for (int w : graph[v]) {
+            if (colReached[w])
+                continue;
+            colReached[w] = true;
+            var nextV = match.matchedWToV[w];
+            if (nextV != -1 && !rowReached[nextV]) {
+                reach(nextV, graph, match, rowReached, colReached);
+            }
+        }
+    }
+
+    public record MinimumLineCover(List<Integer> coveredRows, List<Integer> coveredCols) {
+        public int linesCount() {
+            return coveredRows.size() + coveredCols.size();
+        }
+    }
 }

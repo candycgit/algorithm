@@ -55,12 +55,15 @@ Explanation for step 3 above:
   - derive [**Minimum Vertex Cover**](https://en.wikipedia.org/wiki/Vertex_cover) 
     (minimum set of lines) from the unmatched vertices using 
     **Augmenting Path Search** (Minimum Cover Derivation).
-- For Minimum Line Cover see **König's Theorem**: in any bipartite graph, 
-the number of edges in a maximum matching (maximum number of independent zero assignments) 
-is equal to the minimum number of vertices (minimum number of horizontal and vertical lines) 
-required to cover all edges. Run the DFS from all unassigned rows, then:
-    - Covered Rows: Are all rows **not** reached by the final DFS. (Horizontal Lines)
-    - Covered Columns: Are all columns reached by the final DFS. (Vertical Lines)
+  - Alternating Path runs using DFS from all unassigned rows:
+      - Covered Rows: Are all rows **not** reached by the final DFS. (Horizontal Lines)
+      - Covered Columns: Are all columns reached by the final DFS. (Vertical Lines)
+
+  For Minimum Line Cover see **König's Theorem**: in any bipartite graph, 
+  the number of edges in a maximum matching 
+  (maximum number of independent zero assignments) 
+  is equal to the minimum number of vertices 
+  (minimum number of horizontal and vertical lines) required to cover all edges.
 
 
 ### leetcode

@@ -33,7 +33,7 @@ public class HungarianAlgorithm {
             var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
             var minLineCover = algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
             if (algorithm.isDone(minLineCover)) {
-                // print final result - maxBipartiteMatch
+                algorithm.printResult(maxBipartiteMatch);
                 break;
             }
             algorithm.adjustMatrix(minLineCover);
@@ -58,11 +58,24 @@ public class HungarianAlgorithm {
     private void debug(String title) {
         System.out.println("\n" + title);
         System.out.printf("n = %s\n", n);
+        System.out.print("     ");
+        for (int j = 0; j < n; j++) {
+            System.out.printf("%4d ", j);
+        }
+        System.out.println();
         for (int i = 0; i < n; i++) {
+            System.out.printf("%4d ", i);
             for (int j = 0; j < n; j++) {
                 System.out.printf("%4d ", costMatrix[i][j]);
             }
             System.out.println();
+        }
+    }
+
+    private void printResult(KuhnAlgorithm.MaxBipartiteMatch maxBipartiteMatch) {
+        System.out.println("Result:");
+        for (int w = 0; w < n; w++) {
+            System.out.printf("%s -> %s    ", maxBipartiteMatch.matchedWToV[w], w);
         }
     }
 
@@ -143,11 +156,13 @@ public class HungarianAlgorithm {
         // prepare covered rows and covered columns
         var minLineCover = new MinimumLineCover(new HashSet<>(), new HashSet<>());
         for (int i = 0; i < n; i++) {
+            // covered rows are not reached rows
             if (!rowReached[i]) {
                 minLineCover.coveredRows.add(i);
             }
         }
         for (int j = 0; j < n; j++) {
+            // covered columns are reached columns
             if (colReached[j]) {
                 minLineCover.coveredCols.add(j);
             }

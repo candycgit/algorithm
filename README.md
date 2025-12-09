@@ -43,9 +43,9 @@ Cover all the zeros in the matrix using the minimum number of horizontal and ver
      Continue to Step 4.
 4. Create Additional Zeros (Matrix Adjustment):
    - Find the smallest uncovered value h.
-   - Subtract h from every uncovered entry.
+   - Subtract h from every uncovered element.
    - Add h to every element covered by two lines (the intersection of a row and column line).
-   - Entries covered by exactly one line remain unchanged.
+   - Note: elements covered by exactly one line remain unchanged.
 5. Repeat: Return to Step 3 with the new matrix.
 
 Explanation for step 3 above:

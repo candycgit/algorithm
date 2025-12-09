@@ -11,8 +11,12 @@ import java.util.stream.Stream;
 
 public class HungarianAlgorithm {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BOLD = "\u001B[1m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+
     // the input is assumed to be 100% valid
-    private static final String INPUT_FILE_NAME = "hungarian_input_1.txt";
+    private static final String INPUT_FILE_NAME = "hungarian_input_2.txt";
 
     private int[][] costMatrix;
     private int n;
@@ -31,12 +35,14 @@ public class HungarianAlgorithm {
         while (true) {
             var bipartiteGraph = algorithm.createBipartiteGraph();
             var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
+            algorithm.printMaxBipartiteMatch(maxBipartiteMatch);
             var minLineCover = algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
             if (algorithm.isDone(minLineCover)) {
-                algorithm.printResult(maxBipartiteMatch);
+                System.out.println("Done!");
                 break;
             }
             algorithm.adjustMatrix(minLineCover);
+            algorithm.debug("Adjustment applied:");
         }
     }
 
@@ -72,11 +78,26 @@ public class HungarianAlgorithm {
         }
     }
 
-    private void printResult(KuhnAlgorithm.MaxBipartiteMatch maxBipartiteMatch) {
-        System.out.println("Result:");
-        for (int w = 0; w < n; w++) {
-            System.out.printf("%s -> %s    ", maxBipartiteMatch.matchedWToV[w], w);
+    private void printMaxBipartiteMatch(KuhnAlgorithm.MaxBipartiteMatch maxBipartiteMatch) {
+        System.out.println("\n" + "Current Max Bipartite Match");
+        System.out.printf("n = %s\n", n);
+        System.out.print("     ");
+        for (int j = 0; j < n; j++) {
+            System.out.printf("%4d ", j);
         }
+        System.out.println();
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%4d ", i);
+            for (int j = 0; j < n; j++) {
+                if (maxBipartiteMatch.matchedWToV[j] == i)
+                    System.out.printf(ANSI_BOLD + ANSI_GREEN + "%4d " + ANSI_RESET, costMatrix[i][j]);
+                else
+                    System.out.printf("%4d ", costMatrix[i][j]);
+            }
+            System.out.println();
+        }
+
+
     }
 
     /**

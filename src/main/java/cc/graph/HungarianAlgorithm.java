@@ -16,39 +16,42 @@ public class HungarianAlgorithm {
     public static final String ANSI_GREEN = "\u001B[32m";
 
     // the input is assumed to be 100% valid
-    private static final String INPUT_FILE_NAME = "hungarian_input_2.txt";
+    private static final String INPUT_FILE_NAME = "hungarian_input_3.txt";
 
     private int[][] costMatrix;
     private int n;
 
-    public HungarianAlgorithm() throws Exception {
-        initCostMatrix();
+    public HungarianAlgorithm(String filename) throws Exception {
+        initCostMatrix(filename);
     }
 
     public static void main(String[] args) throws Exception {
-        HungarianAlgorithm algorithm = new HungarianAlgorithm();
-        algorithm.debug("Input read:");
-        algorithm.rowReduction();
-        algorithm.columnReduction();
-        algorithm.debug("Reduction applied:");
+        HungarianAlgorithm algorithm = new HungarianAlgorithm(INPUT_FILE_NAME);
+        algorithm.solve();
+    }
 
+    public void solve() {
+        debug("Input read:");
+        rowReduction();
+        columnReduction();
+        debug("Reduction applied:");
         while (true) {
-            var bipartiteGraph = algorithm.createBipartiteGraph();
-            var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
-            algorithm.printMaxBipartiteMatch(maxBipartiteMatch);
-            var minLineCover = algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
-            if (algorithm.isDone(minLineCover)) {
+            var bipartiteGraph = createBipartiteGraph();
+            var maxBipartiteMatch = findMaxBipartiteMatching(bipartiteGraph);
+            printMaxBipartiteMatch(maxBipartiteMatch);
+            var minLineCover = findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
+            if (isDone(minLineCover)) {
                 System.out.println("Done!");
                 break;
             }
-            algorithm.adjustMatrix(minLineCover);
-            algorithm.debug("Adjustment applied:");
+            adjustMatrix(minLineCover);
+            debug("Adjustment applied:");
         }
     }
 
-    private void initCostMatrix() throws Exception {
-        System.out.println("Reading " + INPUT_FILE_NAME);
-        try (InputStream resource = this.getClass().getClassLoader().getResourceAsStream(INPUT_FILE_NAME);
+    private void initCostMatrix(String filename) throws Exception {
+        System.out.println("Reading " + filename);
+        try (InputStream resource = this.getClass().getClassLoader().getResourceAsStream(filename);
              BufferedReader reader = new BufferedReader(new InputStreamReader(resource))
         ) {
             n = Integer.parseInt(reader.readLine().trim());
@@ -96,8 +99,6 @@ public class HungarianAlgorithm {
             }
             System.out.println();
         }
-
-
     }
 
     /**

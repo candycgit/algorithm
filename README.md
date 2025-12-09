@@ -42,10 +42,9 @@ Cover all the zeros in the matrix using the minimum number of horizontal and ver
    - If the number of lines is less than N, the current zeros are not enough for a perfect assignment. 
      Continue to Step 4.
 4. Create Additional Zeros (Matrix Adjustment):
-   - Find the smallest uncovered entry (the smallest number not covered by any line). 
-     Call this value $\delta$.
-   - Subtract $\delta$ from every uncovered entry.
-   - Add $\delta$ to every element covered by two lines (the intersection of a row and column line).
+   - Find the smallest uncovered value h.
+   - Subtract h from every uncovered entry.
+   - Add h to every element covered by two lines (the intersection of a row and column line).
    - Entries covered by exactly one line remain unchanged.
 5. Repeat: Return to Step 3 with the new matrix.
 

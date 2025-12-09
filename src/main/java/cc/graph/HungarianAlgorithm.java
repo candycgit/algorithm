@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class HungarianAlgorithm {
@@ -27,7 +29,10 @@ public class HungarianAlgorithm {
         algorithm.debug("Reduction applied:");
         var bipartiteGraph = algorithm.createBipartiteGraph();
         var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
-        algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
+        var minLineCover = algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
+        if (algorithm.isDone(minLineCover)) {
+            algorithm.adjustMatrix(minLineCover);
+        }
     }
 
     private void initCostMatrix() throws Exception {
@@ -131,7 +136,7 @@ public class HungarianAlgorithm {
         }
 
         // prepare covered rows and covered columns
-        var minLineCover = new MinimumLineCover(new ArrayList<>(), new ArrayList<>());
+        var minLineCover = new MinimumLineCover(new HashSet<>(), new HashSet<>());
         for (int i = 0; i < n; i++) {
             if (!rowReached[i]) {
                 minLineCover.coveredRows.add(i);
@@ -162,7 +167,45 @@ public class HungarianAlgorithm {
         }
     }
 
-    public record MinimumLineCover(List<Integer> coveredRows, List<Integer> coveredCols) {
+    /**
+     * Analyze results of step 3 of algo.
+     */
+    private boolean isDone(MinimumLineCover minLineCover) {
+        return minLineCover.linesCount() == n;
+    }
+
+    /**
+     * Step 4 of algo - see readme.
+     */
+    private void adjustMatrix(MinimumLineCover minLineCover) {
+        int h = Integer.MAX_VALUE;
+        // find min uncovered value h
+        for (int i = 0; i < n; i++) {
+            if (minLineCover.coveredRows.contains(i))
+                continue;
+            for (int j = 0; j < n; j++) {
+                if (minLineCover.coveredCols.contains(j))
+                    continue;
+                h = Math.min(h, costMatrix[i][j]);
+            }
+        }
+        if (h == Integer.MAX_VALUE) {
+            throw new RuntimeException("h cannot be found");
+        }
+        // adjust matrix
+        for (int i = 0; i < n; i++) {
+            boolean isCoveredRow = minLineCover.coveredRows.contains(i);
+            for (int j = 0; j < n; j++) {
+                boolean isCoveredColumn = minLineCover.coveredCols.contains(j);
+                if (isCoveredRow && isCoveredColumn)
+                    costMatrix[i][j] += h;
+                if (!isCoveredRow && !isCoveredColumn)
+                    costMatrix[i][j] -= h;
+            }
+        }
+    }
+
+    public record MinimumLineCover(Set<Integer> coveredRows, Set<Integer> coveredCols) {
         public int linesCount() {
             return coveredRows.size() + coveredCols.size();
         }

@@ -27,10 +27,15 @@ public class HungarianAlgorithm {
         algorithm.rowReduction();
         algorithm.columnReduction();
         algorithm.debug("Reduction applied:");
-        var bipartiteGraph = algorithm.createBipartiteGraph();
-        var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
-        var minLineCover = algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
-        if (algorithm.isDone(minLineCover)) {
+
+        while (true) {
+            var bipartiteGraph = algorithm.createBipartiteGraph();
+            var maxBipartiteMatch = algorithm.findMaxBipartiteMatching(bipartiteGraph);
+            var minLineCover = algorithm.findMinimumLineCover(bipartiteGraph, maxBipartiteMatch);
+            if (algorithm.isDone(minLineCover)) {
+                // print final result - maxBipartiteMatch
+                break;
+            }
             algorithm.adjustMatrix(minLineCover);
         }
     }

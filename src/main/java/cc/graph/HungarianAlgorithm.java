@@ -49,6 +49,7 @@ public class HungarianAlgorithm {
         }
     }
 
+    // O(n^2)
     private void initCostMatrix(String filename) throws Exception {
         System.out.println("Reading " + filename);
         try (InputStream resource = this.getClass().getClassLoader().getResourceAsStream(filename);

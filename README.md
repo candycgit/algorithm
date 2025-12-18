@@ -1,15 +1,15 @@
 # algorithm
 
-### graph
+## graph
 
 ---
 
-##### :apple: [A*, or A star](https://en.wikipedia.org/wiki/A*_search_algorithm)
+### :apple: [A*, or A star](https://en.wikipedia.org/wiki/A*_search_algorithm)
 Find path between source and destination on a map with obstacles
 
 ---
 
-##### :apple: [Hungarian algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
+### :apple: [Hungarian algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
 See also https://cp-algorithms.com/graph/hungarian-algorithm.html.
 
 The Hungarian algorithm solves the linear assignment problem - 
@@ -70,15 +70,15 @@ Explanation for step 3 above:
 
 ---
 
-##### :apple: [Bellman-Held-Karp algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
+### :apple: [Bellman-Held-Karp algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
 Leverages DP and bitmask for solving the Traveling Salesman Problem.
 
 ---
 
-### leetcode
+## leetcode
 
 ---
 
-##### :apple: [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/description/)
+### :apple: [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/description/)
 
 > Given two integers dividend and divisor, divide two integers without using multiplication, division and mod operator.

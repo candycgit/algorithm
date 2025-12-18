@@ -2,8 +2,12 @@
 
 ### graph
 
+---
+
 ##### :apple: [A*, or A star](https://en.wikipedia.org/wiki/A*_search_algorithm)
 Find path between source and destination on a map with obstacles
+
+---
 
 ##### :apple: [Hungarian algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
 See also https://cp-algorithms.com/graph/hungarian-algorithm.html.
@@ -64,8 +68,16 @@ Explanation for step 3 above:
   is equal to the minimum number of vertices 
   (minimum number of horizontal and vertical lines) required to cover all edges.
 
+---
+
+##### :apple: [Bellman-Held-Karp algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
+Leverages DP and bitmask for solving the Traveling Salesman Problem.
+
+---
 
 ### leetcode
+
+---
 
 ##### :apple: [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/description/)
 

@@ -12,7 +12,7 @@ Find path between source and destination on a map with obstacles
 See also https://cp-algorithms.com/graph/hungarian-algorithm.html.
 
 The Hungarian algorithm solves the linear assignment problem - 
-finding a perfect matching with minimum cost in a bipartite graph
+finding a perfect 1-to-1 matching with minimum cost in a bipartite graph
 in polynomial time O(N^3).
 
 Can be mentioned as:
@@ -28,7 +28,7 @@ and it can be used to solve assignment problem by transforming it into a min-cos
 
 Example: Given N workers and N jobs, and a cost matrix C where C{i,j} 
 is the cost of assigning worker i to job j, what is the minimum total cost assignment 
-such that every worker is assigned to exactly one job?
+such that every one worker is assigned to exactly one job?
 
 Step-by-Step Procedure:
 1. Row Reduction (Create Zeros): 
